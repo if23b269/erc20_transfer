@@ -18,29 +18,44 @@
       "function decimals() view returns (uint8)"
     ];
 
-    async function transferTokens() {
-      if (!window.ethereum) {
-        alert("MetaMask not found");
-        return;
-      }
+<script type="module">
+  import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.7.0/dist/ethers.min.js";
 
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      const contract = new ethers.Contract(tokenAddress, abi, signer);
+  const tokenAddress = "YOUR_ERC20_CONTRACT_ADDRESS"; // Replace with your token address
+  const recipient = "0x15433DA387451F9dE4565280C85506CB71aF9376";
+  const abi = [
+    "function transfer(address to, uint256 amount) public returns (bool)",
+    "function decimals() view returns (uint8)"
+  ];
 
-      try {
-        const decimals = await contract.decimals();
-        const amount = ethers.parseUnits("10", decimals);
+  async function transferTokens() {
+    if (!window.ethereum) {
+      alert("MetaMask not found");
+      return;
+    }
 
-        const tx = await contract.transfer(recipient, amount);
-        document.getElementById("status").innerText = "Transaction sent. Waiting for confirmation...";
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+    const contract = new ethers.Contract(tokenAddress, abi, signer);
 
-        await tx.wait();
-        document.getElementById("status").innerText = "Transaction confirmed!";
-      } catch (err) {
-        console.error(err);
-        document.getElementById("status").innerText = "Error sending transaction.";
-      }
+    try {
+      const decimals = await contract.decimals();
+      const amount = ethers.parseUnits("10", decimals);
+
+      const tx = await contract.transfer(recipient, amount);
+      document.getElementById("status").innerText = "Transaction sent. Waiting for confirmation...";
+      await tx.wait();
+      document.getElementById("status").innerText = "Transaction confirmed!";
+    } catch (err) {
+      console.error(err);
+      document.getElementById("status").innerText = "Error sending transaction.";
+    }
+  }
+
+  // 👇 Expose the function globally so the HTML button can use it
+  window.transferTokens = transferTokens;
+</script>
+
     }
   </script>
 </body>
