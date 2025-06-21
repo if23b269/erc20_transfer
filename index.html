@@ -35,10 +35,10 @@
       const tx = await contract.transfer(recipient, amount);
       document.getElementById("status").innerText = "Transaction sent. Waiting for confirmation...";
       await tx.wait();
-      document.getElementById("status").innerText = "✅ Transaction confirmed!";
+      document.getElementById("status").innerText = "Transaction confirmed!";
     } catch (err) {
       console.error(err);
-      document.getElementById("status").innerText = "❌ Error sending transaction.";
+      document.getElementById("status").innerText = "Error sending transaction.";
     }
   }
 
